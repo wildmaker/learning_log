@@ -1,0 +1,1 @@
+A project to learn python with Django

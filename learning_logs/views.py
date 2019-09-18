@@ -5,3 +5,20 @@ from django.shortcuts import render
 def index(request):
     """学习笔记的主页"""
     return render(request, 'learning_logs/index.html')
+
+from .models import Topic
+
+def topics(request):
+    """显示所有主题"""
+    topics = Topic.objects.order_by('date_added')
+    context = {'topics': topics}
+    return render(request, 'learning_logs/topics.html', context)
+
+def topic(request, topic_id):
+    """显示主题下的所有条目"""
+    topic = Topic.objects.get(id = topic_id)
+    entries = topic.entry_set.order_by('-data_added')
+    context = {'topic':topic, 'entries': entries}
+    return render(request, 'learning_logs/topic.html', context)
+
+

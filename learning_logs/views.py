@@ -63,3 +63,25 @@ def new_entry(request, topic_id):
         'form': form,
     }
     return render(request,'learning_logs/new_entry.html',context )
+
+from .models import Entry
+def edit_entry(request, entry_id):
+    """编辑既有条目"""
+    entry = Entry.objects.get(id = entry_id)
+    topic = entry.topic
+    if request.method != 'POST':
+        # 初次请求, 使用当前条目填充表单
+        form = EntryForm(instance = entry)
+    else:
+        # POST提交的数据修改Entry
+        form = EntryForm(instance = entry, data = request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('learning_logs:topic', args = [topic.id]))
+    
+    context = {
+        'entry': entry,
+        'topic': topic,
+        'form': form
+    }
+    return render(request, 'learning_logs/edit_entry.html', context)
